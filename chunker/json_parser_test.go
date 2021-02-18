@@ -17,7 +17,6 @@
 package chunker
 
 import (
-	"context"
 	"encoding/binary"
 	"encoding/json"
 	"fmt"
@@ -25,7 +24,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/dgraph-io/dgraph/testutil"
+	"github.com/davecgh/go-spew/spew"
 	"github.com/dgraph-io/dgraph/tok"
 	"github.com/golang/glog"
 
@@ -85,25 +84,80 @@ func FastParse(b []byte, op int) ([]*api.NQuad, error) {
 }
 
 func (exp *Experiment) verify() {
-	// insert the data into dgraph
-	dg, err := testutil.DgraphClientWithGroot(testutil.SockAddr)
-	if err != nil {
-		exp.t.Fatalf("Error while getting a dgraph client: %v", err)
-	}
+	/*
+		// insert the data into dgraph
+		dg, err := testutil.DgraphClientWithGroot(testutil.SockAddr)
+		if err != nil {
+			exp.t.Fatalf("Error while getting a dgraph client: %v", err)
+		}
 
-	// TODO(Naman): Fix these tests, once the ACL is integrated.
-	ctx := context.Background()
-	require.NoError(exp.t, dg.Alter(ctx, &api.Operation{DropAll: true}), "drop all failed")
-	require.NoError(exp.t, dg.Alter(ctx, &api.Operation{Schema: exp.schema}),
-		"schema change failed")
+		// TODO(Naman): Fix these tests, once the ACL is integrated.
+		ctx := context.Background()
+		require.NoError(exp.t, dg.Alter(ctx, &api.Operation{DropAll: true}), "drop all failed")
+		require.NoError(exp.t, dg.Alter(ctx, &api.Operation{Schema: exp.schema}),
+			"schema change failed")
 
-	_, err = dg.NewTxn().Mutate(ctx,
-		&api.Mutation{Set: exp.nqs, CommitNow: true})
-	require.NoError(exp.t, err, "mutation failed")
+		_, err = dg.NewTxn().Mutate(ctx,
+			&api.Mutation{Set: exp.nqs, CommitNow: true})
+		require.NoError(exp.t, err, "mutation failed")
 
-	response, err := dg.NewReadOnlyTxn().Query(ctx, exp.query)
-	require.NoError(exp.t, err, "query failed")
-	testutil.CompareJSON(exp.t, exp.expected, string(response.GetJson()))
+		response, err := dg.NewReadOnlyTxn().Query(ctx, exp.query)
+		require.NoError(exp.t, err, "query failed")
+		testutil.CompareJSON(exp.t, exp.expected, string(response.GetJson()))
+	*/
+}
+
+func TestNquadsFromJsonFacets5(t *testing.T) {
+	// Dave has uid facets which should go on the edge between Alice and Dave,
+	// AND Emily has uid facets which should go on the edge between Dave and Emily
+
+	/*
+		data := `[
+			{
+				"name":"Alice",
+				"friend":[
+					{
+						"name":"Dave",
+						"friend|close":true,
+						"friend":[
+							{
+								"name":"Emily",
+								"friend|close":true
+							}
+						]
+					}
+				]
+			}
+		]`
+	*/
+
+	data := `[
+		{
+			"name": "Alice",
+			"friend": [
+				{
+					"name": "Dave",
+					"friend": [
+						{
+							"name": "Emily"
+						}
+					],
+					"friend|close": {
+						"0": true
+					}
+				}
+			],
+			"friend|close": {
+				"0": true
+			}
+		}
+	]`
+
+	nq, err := Parse([]byte(data), SetNquads)
+	spew.Dump(nq, err)
+
+	fastNQ, err := FastParse([]byte(data), SetNquads)
+	spew.Dump(fastNQ, err)
 }
 
 type Experiment struct {
