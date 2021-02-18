@@ -110,47 +110,61 @@ func (exp *Experiment) verify() {
 func TestNquadsFromJsonFacets5(t *testing.T) {
 	// Dave has uid facets which should go on the edge between Alice and Dave,
 	// AND Emily has uid facets which should go on the edge between Dave and Emily
+	var data string
 
 	/*
-		data := `[
+		data = `[
+				{
+					"name":"Alice",
+					"friend":[
+						{
+							"name":"Dave",
+							"friend|close":true,
+							"friend":[
+								{
+									"name":"Emily",
+									"friend|close":true
+								}
+							]
+						}
+					]
+				}
+			]`
+	*/
+
+	/*
+		data = `[
 			{
-				"name":"Alice",
-				"friend":[
-					{
-						"name":"Dave",
-						"friend|close":true,
-						"friend":[
-							{
-								"name":"Emily",
-								"friend|close":true
-							}
-						]
-					}
-				]
+				"name": "Alice",
+				"friend": {
+					"name": "Dave",
+					"friend": {
+						"name": "Emily"
+					},
+					"friend|close": true
+				},
+				"friend|close": true
 			}
 		]`
 	*/
 
-	data := `[
-	    {
-	        "name": "Alice",
-	        "friend": [
-	            {
-	                "name": "Dave",
-	                "friend": [
-	                    {
-	                        "name": "Emily"
-	                    }
-	                ],
-	                "friend|close": {
-	                    "0": true
-	                }
-	            }
-	        ],
-	        "friend|close": {
-	            "0": true
-	        }
-	    }
+	// works
+	data = `[
+		{
+			"name": "Alice",
+			"friend": [
+				{
+					"name": "Dave",
+					"friend|close": true,
+					"another_friend": [
+						{
+							"name": "Emily",
+							"another_friend|close": true
+						}
+					]
+				}
+			]
+		}
 	]`
 
 	nq, err := Parse([]byte(data), SetNquads)

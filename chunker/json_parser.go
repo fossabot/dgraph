@@ -26,6 +26,7 @@ import (
 	"sync/atomic"
 	"unicode"
 
+	"github.com/davecgh/go-spew/spew"
 	"github.com/dgraph-io/dgo/v200/protos/api"
 	"github.com/dgraph-io/dgraph/protos/pb"
 	"github.com/dgraph-io/dgraph/types"
@@ -95,6 +96,7 @@ func handleBasicFacetsType(key string, facetVal interface{}) (*api.Facet, error)
 		jsonValue = v
 		valueType = api.Facet_BOOL
 	default:
+		spew.Dump(v)
 		return nil, errors.Errorf("facet value can only be string/number/bool.")
 	}
 
