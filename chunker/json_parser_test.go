@@ -132,25 +132,25 @@ func TestNquadsFromJsonFacets5(t *testing.T) {
 	*/
 
 	data := `[
-		{
-			"name": "Alice",
-			"friend": [
-				{
-					"name": "Dave",
-					"friend": [
-						{
-							"name": "Emily"
-						}
-					],
-					"friend|close": {
-						"0": true
-					}
-				}
-			],
-			"friend|close": {
-				"0": true
-			}
-		}
+	    {
+	        "name": "Alice",
+	        "friend": [
+	            {
+	                "name": "Dave",
+	                "friend": [
+	                    {
+	                        "name": "Emily"
+	                    }
+	                ],
+	                "friend|close": {
+	                    "0": true
+	                }
+	            }
+	        ],
+	        "friend|close": {
+	            "0": true
+	        }
+	    }
 	]`
 
 	nq, err := Parse([]byte(data), SetNquads)
