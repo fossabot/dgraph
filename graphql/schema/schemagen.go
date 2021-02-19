@@ -74,6 +74,7 @@ func (s *handler) DGSchema() string {
 
 func parseSecrets(sch string) (map[string]string, *authorization.AuthMeta, error) {
 	m := make(map[string]string)
+	sch = strings.Replace(sch, "# Dgraph.Authorization", "\n# Dgraph.Authorization", 1)
 	scanner := bufio.NewScanner(strings.NewReader(sch))
 	authSecret := ""
 	for scanner.Scan() {
