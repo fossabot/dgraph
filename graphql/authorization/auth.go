@@ -344,7 +344,18 @@ func ExtractCustomClaims(ctx context.Context) (*CustomClaims, error) {
 	} else if len(jwtToken) > 1 {
 		return nil, fmt.Errorf("invalid jwt auth token")
 	}
-	return validateJWTCustomClaims(jwtToken[0])
+	token := jwtToken[0]
+	if strings.HasPrefix(strings.ToLower(token), "bearer ") {
+		parts := strings.Split(token, " ")
+		if len(parts) != 2 {
+			return nil, fmt.Errorf("invalid Bearer-formatted header value for JWT (%s)", token)
+		}
+		token = parts[1]
+		if len(strings.Split(token, ".")) != 3 {
+			return nil, fmt.Errorf("invalid value for JWT (%s)", token)
+		}
+	}
+	return validateJWTCustomClaims(token)
 }
 
 func GetJwtToken(ctx context.Context) string {
