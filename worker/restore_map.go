@@ -1,13 +1,17 @@
-// +build !oss
-
 /*
  * Copyright 2021 Dgraph Labs, Inc. and Contributors
  *
- * Licensed under the Dgraph Community License (the "License"); you
- * may not use this file except in compliance with the License. You
- * may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- *     https://github.com/dgraph-io/dgraph/blob/master/licenses/DCL.txt
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 package worker
@@ -388,6 +392,18 @@ func (p *processor) processKV(buf *z.Buffer, in *loadBackupInput, kv *bpb.KV) er
 				}
 			}
 		}
+
+	case posting.BitForbidPosting:
+		if _, ok := in.dropNs[ns]; ok {
+			return nil
+		}
+		newKv := &bpb.KV{
+			Key:      restoreKey,
+			Value:    nil,
+			UserMeta: []byte{posting.BitForbidPosting},
+			Version:  p.restoreTs,
+		}
+		return toBuffer(newKv, kv.Version)
 
 	case posting.BitSchemaPosting:
 		appendNamespace := func() error {
@@ -780,6 +796,10 @@ func RunMapper(req *pb.RestoreRequest, mapDir string) (*mapResult, error) {
 			case pb.DropOperation_ATTR:
 				dropAttr[op.DropValue] = struct{}{}
 			case pb.DropOperation_NS:
+				// pstore will be nil for export_backup tool. In that case we don't need to ban ns.
+				if pstore == nil {
+					continue
+				}
 				// If there is a drop namespace, we just ban the namespace in the pstore.
 				ns, err := strconv.ParseUint(op.DropValue, 0, 64)
 				if err != nil {

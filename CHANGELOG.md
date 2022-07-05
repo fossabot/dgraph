@@ -4,6 +4,937 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project will adhere to [Calendar Versioning](https://calver.org/) starting v20.03.
 
+## [21.12.0] - 2021-11-30
+[21.12.0]: https://github.com/dgraph-io/dgraph/compare/v21.03.0...v21.12.0
+
+### Changed
+
+- [BREAKING] feat(sroar): Bring sroar to Dgraph ([#7840][])
+- [BREAKING] Return error for illegal math operations. ([#7631][])
+- [BREAKING] feat: bring dgraph-lambda to dgraph, alpha launches lambda server ([#7973][])
+- [BREAKING] fix json marshal unmarshal for namespace > 127 ([#7810][])
+- [BREAKING] fix(usability): make force-namespace flag compulsory in live loader for galaxy user  ([#7731][])
+- [BREAKING] perf(Transactions): Run transactions concurrently ([#7694][])
+- [BREAKING] feat(flags): expand badger to accept all valid options ([#7677][])
+- [BREAKING] fix(commit): make txn context more robust ([#7659][])
+- [BREAKING] Opt(Restore): Optimize Restore's new map-reduce based design ([#7666][])
+- [BREAKING] fix(metrics): Rename Badger metrics. ([#7507][])
+- [BREAKING] Make backup-restore an open source feature ([#8067][])
+
+### Added
+
+- GraphQL
+  - Feat(GRAPHQL): adds `@default` directive for setting default field values at create and update ([#8017][])
+  - Feat(GRAPHQL): Support auth with custom DQL ([#7775][])
+  - Feat(GRAPHQL): This PR allows updatable and nullable `@id` fields. ([#7736][])
+  - Feat(GRAPHQL): Disallow DQL schema changes for predicates used in GraphQL schema (DGRAPH-3245) ([#7742][])
+  - Feat(GRAPHQL): This PR allows `@id` field in interface to be unique across all the implementing types. ([#7710][])
+  - Feat(GRAPHQL): Add language tag support in GraphQL ([#7663][])
+  - Feat(GRAPHQL): Zero HTTP endpoints are now available at GraphQL admin (GRAPHQL-1118) ([#6649][])
+  - Feat(GRAPHQL): Webhooks on add/update/delete mutations (GRAPHQL-1045) ([#7494][])
+  - Feat(GRAPHQL): Allow Multipe JWKUrls for auth. ([#7528][])
+  - Feat(GRAPHQL): Add support for passing OAuth Bearer token as authorization JWT ([#7490][])
+
+- Core Dgraph
+  - Feat(metrics): Add Badger metrics. ([#8034][])
+  - Feat(magicNumber): Introduce magic number ([#8032][])
+  - Feat(lambda): allow access to access jwt in lambda ([#8023][])
+  - Feat(rdf-response): Support RDF response via http query request ([#8004][])
+  - Feat(sroar): Use rank() API from sroar and some cleanup ([#8002][])
+  - Feat(lambda): store lambda scripts within the dgraph ([#7955][])
+  - Feat(query): handle extend keyword for Queries and Mutations ([#7916][])
+  - Feat(Backup): Add native google cloud storage backup support ([#7829][])
+  - Feat(Backup): Add native support for backup to Azure. ([#7843][])
+  - Feat(cloud): add shared-instance flag in limit superflag in alpha ([#7770][])
+  - Feat(Dgraph): Add task queue implementation ([#7716][])
+  - Feat(DQL): `@groupby` on scalar fields and count duplicate  ([#7746][])
+  - Feat(Query): Add random keyword in DQL ([#7693][])
+  - Feat(tool): Neo4j CSV to RDF Converter ([#7545][])
+  - Feat(query): Add mechanism to have a limit on number of pending queries ([#7603][])
+  - Feat(flag): remove unused badger.max-retries option from bulk command ([#7591][])
+  - Feat(sentry): clusterID flag added for alpha sentry reports (gql-services) ([#7580][])
+  - Feat(cmd/debuginfo) add new metrics to be collected ([#7439][])
+  - Feat(flags): use Vault for ACL secrets ([#7492][])
+  - Feat(Apollo): Add support for `@provides` and `@requires` directive.  ([#7503][])
+  - Feat(restore): Introduce incremental restore ([#7942][]) ([#7971][])
+  - Feat(schema): do schema versioning and make backup non-blocking for indexing ([#7852][])
+  - Feat(zero bulk): adding bulk call for alpha to inform zero about the tablets ([#8100][])
+  - Feat(cdc): Add superflag to enable TLS without CA or certs. ([#8097][])
+
+- Enterprise Features
+  - Feat(Multi-tenancy): Add namespaces field to state ([#7808][])
+  - Feat(multi-tenancy): make drop data namespace aware ([#7789][]) ([#7795][])
+  - Feat(cdc): Add support for SCRAM SASL mechanism ([#7765][])
+  - Feat(acl): allow access to all the predicates using wildcard ([#7991][])
+  - Feat(cdc): Add superflag to enable TLS without CA or certs. ([#7946][])
+
+### Fixed
+
+- GraphQL
+  - Fix(GRAPHQL): add validation of null values with correct order of graphql rule validation ([#8007][]) ([#8008][])
+  - Fix(GRAPHQL): fix type assertion failure in graphql if resolver is not defined ([#8003][])
+  - Fix(GRAPHQL): fixing graphql schema update when the data is restored ([#7970][])
+  - Fix(GRAPHQL): Nested Auth Rules not working properly. ([#7915][])
+  - Fix(GRAPHQL): optimize eq filter queries ([#7895][])
+  - Fix(GRAPHQL): Fix duplicate XID error in case of interface XIDs ([#7776][])
+  - Fix(GRAPHQL): Pass on HTTP request headers for subscriptions ([#7806][])
+  - Fix(GRAPHQL): Make mutation rewriting tests more robust ([#7768][])
+  - Fix(GRAPHQL): Fix error message of lambdaOnMutate directive  ([#7751][])
+  - Fix(GRAPHQL): fix auth query rewriting with ID filter ([#7740][])
+  - Fix(GRAPHQL): Add filter in DQL query in case of reverse predicate ([#7728][])
+  - Fix(GRAPHQL): Fix GraphQL encoding in case of empty list ([#7726][])
+  - Fix(GRAPHQL): fix `@cascade` with Pagination for `@auth` queries. ([#7695][])
+  - Fix(GRAPHQL): Fix Execution Trace for Add and Update Mutations ([#7656][])
+  - Fix(GRAPHQL): Log query along with the panic ([#7638][])
+  - Fix(GRAPHQL): Add error handling for unrecognized args to generate directive. ([#7612][])
+  - Fix(GRAPHQL): Fix panic when no schema exists for a new namespace ([#7630][])
+  - Fix(GRAPHQL): fixed output coercing for admin fields. ([#7617][])
+  - Fix(GRAPHQL): fix lambda querying a lambda field in case of no data. ([#7610][])
+  - Fix(GRAPHQL): Add extra checks for deleting UpdateTypeInput ([#7595][])
+  - Fix(GRAPHQL): remove support of `@id` directive on Float ([#7583][])
+  - Fix(GRAPHQL): Fix mutation with Int Xid variables. ([#7565][])
+  - Fix(GRAPHQL): Fix custom(dql: ...) with __typename (GRAPHQL-1098) ([#7569][])
+  - Fix(GRAPHQL): Change variable name generation for interface auth rules ([#7559][])
+  - Fix(GRAPHQL): Apollo federation now works with lambda (GRAPHQL-1084) ([#7558][])
+  - Fix(GRAPHQL): fix empty remove in update mutation patch, that remove all the data for nodes in filter. ([#7563][])
+  - Fix(GRAPHQL): fix order of entities query result  ([#7542][])
+  - Fix(GRAPHQL): Change variable name generation from Type<Num> to Type_<Num> ([#7556][])
+  - Fix(GRAPHQL): fix duplicate xid error for multiple xid fields. ([#7546][])
+  - Fix(GRAPHQL): Added support for exact index on field having `@id` directive. ([#7534][]) ([#7551][])
+  - Fix(GRAPHQL): fix query rewriting for multiple order on nested field. ([#7523][])
+  - Fix(GRAPHQL) fix empty `type Query` with single extended type definition in the schema. ([#7517][])
+
+- Core Dgraph
+  - Fix(sort): Only filter out nodes with positive offsets. ([#8077][])
+  - Fix(fragment): merge the nested fragments fields ([#8075][])
+  - Fix(lambda): upgrade lambda dependencies to fix vulnerabilities ([#8074][])
+  - Fix(magic): fix the magic version in bulk loader etc ([#8070][])
+  - Fix(split): enable split of posting list with single plist ([#8062][])
+  - Fix(restore): Do not retry restore proposal ([#8058][])
+  - Fix(txn): Fix data races in transaction code ([#8060][])
+  - Fix(shutdown): wait for pending queries to process on alpha shutdown ([#8057][])
+  - Fix(restore-test): Make offline restore use separate map directory for each group ([#8047][])
+  - Fix(lambda-logs): extract namespace from body.namespace ([#8043][])
+  - Fix(lambda): make lambda active only after successful start ([#8036][])
+  - Fix(probe): do not contend for lock in lazy load ([#8037][])
+  - Fix(lambda): shutdown node processes when alpha gets killed ([#8027][])
+  - Fix(snapshot): Fix snapshot calculation after restore ([#8024][])
+  - Fix(badger): Upgrade badger to fix deadlock ([#8025][])
+  - Fix(bulk): quote the schema correctly in bulk loader ([#8019][])
+  - Fix(sbs): handle response error gracefully ([#8018][])
+  - Fix(admin): make config changes to pass through gog middlewares ([#8014][])
+  - Fix(lambda): fix race condition in lambda server spin up ([#8013][])
+  - Fix(proposals): Incremental proposal key for zero proposals ([#8005][])
+  - Fix(lambda): monitor lambda server, fix performance issue, remove lambda logs from extensions ([#8006][])
+  - Fix(live): quote the xid when doing upsert ([#7983][])
+  - Fix(sroar): Bring latest sroar to master ([#7977][])
+  - Fix(query): Do not execute filters if there are no source uids ([#7962][]) ([#7969][])
+  - Fix(snapshot): update last snapshot time across members ([#7968][])
+  - Fix(pool): use write lock when getting health info ([#7963][])
+  - Fix(JoinCluster): Avoid retrying JoinCluster indefinitely ([#7961][])
+  - Fix(rollups): Write rolled-up keys at ts+1 ([#7957][]) ([#7959][])
+  - Fix(conn): JoinCluster loop should use latest conn ([#7950][])
+  - Fix(restore): Set kv version to restoreTs for rolled up keys and schema keys ([#7930][]) ([#7935][])
+  - Fix(backup): Fix full backup request ([#7932][])
+  - Fix(cmd/debug): Print banned namespaces correctly. ([#7929][])
+  - Reconnect via a redial in case of disconnection. ([#7918][])
+  - Fix(metrics): Expose dgraph_num_backups_failed_total metric view. ([#7900][])
+  - Fix(sroar): Fix TestAuthWithCustomDQL failure because of roaring bitmaps ([#7902][])
+  - Fix(DQL): revert changes related to cascade pagination with sort ([#7885][])
+  - Fix(restore): append galaxy namespace to type name ([#7880][])
+  - Fix(Backup): use validReadTs from manifest for backward compatibility ([#7601][]) ([#7863][])
+  - fix the predicate move ([#7862][])
+  - Fix(restore): consider the banned namespaces while bumping ([#7839][])
+  - Fix(restore): update the schema and type from 2103 ([#7838][])
+  - Fix(updatemanifest): update the version of manifest after update ([#7828][])
+  - Fix(backup): handle manifest version logic, update manifest version to 2105 ([#7825][])
+  - Fix(schema-update): Start opIndexing only when index creation is required. ([#7845][])
+  - Fix(admin): remove exportedFiles field ([#7835][])
+  - Fix(restore): reset the kv.StreamId before sending to stream writer ([#7833][])
+  - Fix(auth): preserve the status code while returning error ([#7832][])
+  - bug fix to permit audit streaming to stdout writer([#7803][])
+  - Fix(lease): don't do rate limiting when not limit is not specified ([#7787][]) ([#7801][])
+  - Fix(restore): Bump uid and namespace after restore ([#7790][])
+  - Fix(txn): ensure that txn hash is set ([#7782][])
+  - Fix(export-backup): Fix double free in export backup ([#7780][])
+  - Fix(Dgraph): Forward task status requests to correct Alpha ([#7774][])
+  - Fix(bulk): upsert guardian/groot for all existing namespaces ([#7759][])
+  - Fix(export): Fix facet export of reference type postings to JSON format ([#7744][])
+  - fix: Prevent proposal from being dropped accidentally ([#7741][])
+  - Fix(live): make live loader progress on a cluster with very high maxUid  ([#7743][])
+  - Fix(Chunker): don't delete node with empty facet in mutation ([#7737][])
+  - Fix(DQL): optimize query for has function with offset. ([#7727][])
+  - fixing readme for dgraph after latest release ([#7732][])
+  - Fix(lease): prevent ID lease overflow ([#7724][])
+  - Fix(lsbackup): Fix profiler in lsBackup ([#7729][])
+  - Fix(bulk): throw the error instead of crashing ([#7722][])
+  - Fix(ee): GetKeys should return an error ([#7713][])
+  - Fix(raftwal): take snapshot after restore ([#7719][])
+  - Fix(pagination): Fix after for regexp, match functions ([#7700][])
+  - Fix(query): Prevent multiple entries for same predicate/type in schema mutations. ([#7715][])
+  - Fix(vault): Hide ACL flags when not required ([#7701][])
+  - Fix(flag): fix bulk loader flag and remove flag parsing from critical path ([#7679][])
+  - Fix(upgrade): make upgrade tool to work with non-acl cluster ([#7674][])
+  - Fix(query): Fix pagination with match functions ([#7668][])
+  - Fix(postingList): Acquire lock before reading the cached posting list ([#7632][])
+  - Fix(zero): add a ratelimiter to limit the uid lease per namespace ([#7568][])
+  - Fix(export): use UriHandler for exports ([#7690][])
+  - Fix s3 backup copy ([#7669][])
+  - return if no uids exist in queries for Geo ([#7651][])
+  - Fix(DGRAPH): fix `@normalize` response when multiple fields at different levels with same alias are selected. ([#7639][])
+  - Fix(/commit): protect the commit endpoint via acl ([#7608][])
+  - Use GetString for vault path ([#7605][])
+  - Fix query logging for mutations ([#7646][])
+  - Fix(login): fix login based on refresh token logic ([#7637][])
+  - Fix(Query): Fix cascade pagination with 0 offset. ([#7636][])
+  - feat(flags): Add query timeout as a limit config ([#7599][])
+  - Fix(flags): Add empty defaults to Vault superflag ([#7598][])
+  - Fix(persistent): make persistent query namespace aware ([#7570][])
+  - Fix(rollups): Fix splits in roll-up ([#7609][])
+  - fix for xgo version to use ([#7620][])
+  - Fix(flags): Expose global flags to dgraph subcommands. ([#7530][])
+  - Fix(telemetry): fix zero crash due to telemetry ([#7575][])
+  - Fix(telemetry): Track enterprise feature usage ([#7495][])
+  - Fix(release): update support for xgo tool ([#7576][])
+  - Fix(super-flags): Use GetPath for path arguments in superflags ([#7541][])
+  - Fix(dql): Fix error message in case of wrong argument to val() ([#7543][])
+  - Fix(Roaring): Remove pack from posting list ([#7535][])
+  - Fix(Flags): immediately panic on SuperFlag user errors ([#7529][])
+  - Fix(Rollups): Don't try splitting a posting list with cardinality less than 2. ([#7525][])
+  - Fix(export): fix namespace parameter in export ([#7524][])
+  - Fix(live): fix usage of force-namespace parameter in export ([#7526][])
+  - Fix largeSchemaUpdate test ([#7522][])
+  - Fix(Configs): Allow hierarchical notation in JSON/YAML configs ([#7498][])
+  - Fix(Bulk): Remove stale allocator in reduce ([#7510][])
+  - Fix upsert mutations ([#7515][])
+  - Fix(standalone): Set whitelist flag using superflag. ([#7512][])
+  - Fix(admin-endpoints): Error out if the request is rejected by the server ([#7511][])
+  - Fix(Dgraph): Throttle number of files to open while schema update ([#7480][])
+  - Fix(metrics): Expose Badger LSM and vlog size bytes. ([#7488][])
+  - Fix(schema): log error instead of panic if schema not found for predicate ([#7502][])
+  - Fix(tool): Don't ban namespace in export_backup ([#8099][])
+  - Fix(state): fix hex to uint64 response of list of namespaces ([#8101][])
+  - Fix(restore): return nil if there is error ([#8098][])
+
+- Enterprise Features
+  - Fix(audit): fixing audit logs for websocket connections ([#8048][])
+  - Fix(acl): subscribe for the correct predicates ([#7992][])
+  - Fix(acl): filter out the results based on type ([#7978][]) ([#7980][])
+  - Fix(groot): do not upsert groot for all namespaces on restart ([#7917][])
+  - Fix(cdc): Show namespace info in event meta ([#7721][])
+  - Fix(learner): Don't start a learner node with no peers ([#7582][])
+  - Fix(audit): logs not getting deleted after N days ([#7567][])
+  - Fix(release/v21.03) - Use worker.GetEEFeatureList instead of ee.GetEEFeatureList ([#7564][])
+  - Fix(multi-tenancy): Format namespace to human readable form ([#7552][])
+  - Fix(learner nodes): Reconnect to learner nodes after restart ([#7554][])
+  - Fix(multi-tenancy): fix live loader for case when namespace does not exist for data ([#7505][])
+
+### Performance:
+
+- Opt(schema): Optimize populateSchema() by avoiding repeated lock acquisition ([#8068][])
+- Perf: Speed up parsing of a huge query with a lot of conditional mutations ([#7871][])
+- Opt(Restore): Make restore map phase faster ([#8038][])
+- Opt(codec): return nil instead of a new bitmap ([#7997][])
+- Opt(cache): Use Ristretto to store posting lists ([#7995][])
+- Opt(rdf-output): Make RDF output generation concurrent ([#7988][])
+- Opt(recurse): Optimise recurse and bring range iterators from sroar ([#7989][])
+- Opt(restore): Sort the buffer before spinning the writeToDisk goroutine ([#7984][])
+- Perf(sroar): Use latest sroar and add histogram in the sbs tool ([#7982][])
+- Opt(Alpha): Load schema and types using Stream framework ([#7938][]) ([#7940][])
+- Opt(query): Use sroar in pb.List ([#7864][])
+- Opt(snapshot): use full table copy when streaming the entire data ([#7870][])
+- Opt(snapshot): Optimize snapshot by using sinceTs ([#7826][])
+- Opt(predMove): iterate Phase I till there is major data to move ([#7792][])
+- Opt(dropPrefix): allow logical drop for deleting predicates and indexing ([#7764][])
+- Opt(txn commits): Optimize txns by passing Skiplists to Badger ([#7777][])
+- Opt(GraphQL): filter existence queries on GraphQL side instead of using `@filter(type)` ([#7757][])
+- Opt(predMove): hot tablet move ([#7703][])
+- Opt(Backup): Make backups faster ([#7680][])
+- Perf(restore): Implement map-reduce based restore ([#7664][])
+- Opt(reindex): do not try building indices when inserting a new predicate ([#7109][])
+- Perf(txn): de-duplicate the context keys and predicates ([#7478][])
+- perf(rollup): use NSplit API from sroar to improve rollup performance ([#8092][])
+
+[#7957]: https://github.com/dgraph-io/dgraph/issues/7957
+[#7978]: https://github.com/dgraph-io/dgraph/issues/7978
+[#7938]: https://github.com/dgraph-io/dgraph/issues/7938
+[#8099]: https://github.com/dgraph-io/dgraph/issues/8099
+[#8101]: https://github.com/dgraph-io/dgraph/issues/8101
+[#8100]: https://github.com/dgraph-io/dgraph/issues/8100
+[#8097]: https://github.com/dgraph-io/dgraph/issues/8097
+[#8098]: https://github.com/dgraph-io/dgraph/issues/8098
+[#7946]: https://github.com/dgraph-io/dgraph/issues/7946
+[#7942]: https://github.com/dgraph-io/dgraph/issues/7942
+[#7490]: https://github.com/dgraph-io/dgraph/issues/7490
+[#7789]: https://github.com/dgraph-io/dgraph/issues/7789
+[#8007]: https://github.com/dgraph-io/dgraph/issues/8007
+[#7534]: https://github.com/dgraph-io/dgraph/issues/7534
+[#7787]: https://github.com/dgraph-io/dgraph/issues/7787
+[#7601]: https://github.com/dgraph-io/dgraph/issues/7601
+[#7930]: https://github.com/dgraph-io/dgraph/issues/7930
+[#7962]: https://github.com/dgraph-io/dgraph/issues/7962
+[#7840]: https://github.com/dgraph-io/dgraph/issues/7840
+[#7631]: https://github.com/dgraph-io/dgraph/issues/7631
+[#7973]: https://github.com/dgraph-io/dgraph/issues/7973
+[#7810]: https://github.com/dgraph-io/dgraph/issues/7810
+[#7731]: https://github.com/dgraph-io/dgraph/issues/7731
+[#7694]: https://github.com/dgraph-io/dgraph/issues/7694
+[#7677]: https://github.com/dgraph-io/dgraph/issues/7677
+[#7659]: https://github.com/dgraph-io/dgraph/issues/7659
+[#7666]: https://github.com/dgraph-io/dgraph/issues/7666
+[#7507]: https://github.com/dgraph-io/dgraph/issues/7507
+[#8067]: https://github.com/dgraph-io/dgraph/issues/8067
+[#8017]: https://github.com/dgraph-io/dgraph/issues/8017
+[#7775]: https://github.com/dgraph-io/dgraph/issues/7775
+[#7736]: https://github.com/dgraph-io/dgraph/issues/7736
+[#7742]: https://github.com/dgraph-io/dgraph/issues/7742
+[#7710]: https://github.com/dgraph-io/dgraph/issues/7710
+[#7663]: https://github.com/dgraph-io/dgraph/issues/7663
+[#6649]: https://github.com/dgraph-io/dgraph/issues/6649
+[#7494]: https://github.com/dgraph-io/dgraph/issues/7494
+[#7528]: https://github.com/dgraph-io/dgraph/issues/7528
+[#8034]: https://github.com/dgraph-io/dgraph/issues/8034
+[#8032]: https://github.com/dgraph-io/dgraph/issues/8032
+[#8023]: https://github.com/dgraph-io/dgraph/issues/8023
+[#8004]: https://github.com/dgraph-io/dgraph/issues/8004
+[#8002]: https://github.com/dgraph-io/dgraph/issues/8002
+[#7955]: https://github.com/dgraph-io/dgraph/issues/7955
+[#7916]: https://github.com/dgraph-io/dgraph/issues/7916
+[#7829]: https://github.com/dgraph-io/dgraph/issues/7829
+[#7843]: https://github.com/dgraph-io/dgraph/issues/7843
+[#7770]: https://github.com/dgraph-io/dgraph/issues/7770
+[#7716]: https://github.com/dgraph-io/dgraph/issues/7716
+[#7746]: https://github.com/dgraph-io/dgraph/issues/7746
+[#7693]: https://github.com/dgraph-io/dgraph/issues/7693
+[#7545]: https://github.com/dgraph-io/dgraph/issues/7545
+[#7603]: https://github.com/dgraph-io/dgraph/issues/7603
+[#7591]: https://github.com/dgraph-io/dgraph/issues/7591
+[#7580]: https://github.com/dgraph-io/dgraph/issues/7580
+[#7439]: https://github.com/dgraph-io/dgraph/issues/7439
+[#7492]: https://github.com/dgraph-io/dgraph/issues/7492
+[#7503]: https://github.com/dgraph-io/dgraph/issues/7503
+[#7971]: https://github.com/dgraph-io/dgraph/issues/7971
+[#7852]: https://github.com/dgraph-io/dgraph/issues/7852
+[#7808]: https://github.com/dgraph-io/dgraph/issues/7808
+[#7795]: https://github.com/dgraph-io/dgraph/issues/7795
+[#7765]: https://github.com/dgraph-io/dgraph/issues/7765
+[#7991]: https://github.com/dgraph-io/dgraph/issues/7991
+[#8008]: https://github.com/dgraph-io/dgraph/issues/8008
+[#8003]: https://github.com/dgraph-io/dgraph/issues/8003
+[#7970]: https://github.com/dgraph-io/dgraph/issues/7970
+[#7915]: https://github.com/dgraph-io/dgraph/issues/7915
+[#7895]: https://github.com/dgraph-io/dgraph/issues/7895
+[#7776]: https://github.com/dgraph-io/dgraph/issues/7776
+[#7806]: https://github.com/dgraph-io/dgraph/issues/7806
+[#7768]: https://github.com/dgraph-io/dgraph/issues/7768
+[#7751]: https://github.com/dgraph-io/dgraph/issues/7751
+[#7740]: https://github.com/dgraph-io/dgraph/issues/7740
+[#7728]: https://github.com/dgraph-io/dgraph/issues/7728
+[#7726]: https://github.com/dgraph-io/dgraph/issues/7726
+[#7695]: https://github.com/dgraph-io/dgraph/issues/7695
+[#7656]: https://github.com/dgraph-io/dgraph/issues/7656
+[#7638]: https://github.com/dgraph-io/dgraph/issues/7638
+[#7612]: https://github.com/dgraph-io/dgraph/issues/7612
+[#7630]: https://github.com/dgraph-io/dgraph/issues/7630
+[#7617]: https://github.com/dgraph-io/dgraph/issues/7617
+[#7610]: https://github.com/dgraph-io/dgraph/issues/7610
+[#7595]: https://github.com/dgraph-io/dgraph/issues/7595
+[#7583]: https://github.com/dgraph-io/dgraph/issues/7583
+[#7565]: https://github.com/dgraph-io/dgraph/issues/7565
+[#7569]: https://github.com/dgraph-io/dgraph/issues/7569
+[#7559]: https://github.com/dgraph-io/dgraph/issues/7559
+[#7558]: https://github.com/dgraph-io/dgraph/issues/7558
+[#7563]: https://github.com/dgraph-io/dgraph/issues/7563
+[#7542]: https://github.com/dgraph-io/dgraph/issues/7542
+[#7556]: https://github.com/dgraph-io/dgraph/issues/7556
+[#7546]: https://github.com/dgraph-io/dgraph/issues/7546
+[#7551]: https://github.com/dgraph-io/dgraph/issues/7551
+[#7523]: https://github.com/dgraph-io/dgraph/issues/7523
+[#7517]: https://github.com/dgraph-io/dgraph/issues/7517
+[#8077]: https://github.com/dgraph-io/dgraph/issues/8077
+[#8075]: https://github.com/dgraph-io/dgraph/issues/8075
+[#8074]: https://github.com/dgraph-io/dgraph/issues/8074
+[#8070]: https://github.com/dgraph-io/dgraph/issues/8070
+[#8062]: https://github.com/dgraph-io/dgraph/issues/8062
+[#8058]: https://github.com/dgraph-io/dgraph/issues/8058
+[#8060]: https://github.com/dgraph-io/dgraph/issues/8060
+[#8057]: https://github.com/dgraph-io/dgraph/issues/8057
+[#8047]: https://github.com/dgraph-io/dgraph/issues/8047
+[#8043]: https://github.com/dgraph-io/dgraph/issues/8043
+[#8036]: https://github.com/dgraph-io/dgraph/issues/8036
+[#8037]: https://github.com/dgraph-io/dgraph/issues/8037
+[#8027]: https://github.com/dgraph-io/dgraph/issues/8027
+[#8024]: https://github.com/dgraph-io/dgraph/issues/8024
+[#8025]: https://github.com/dgraph-io/dgraph/issues/8025
+[#8019]: https://github.com/dgraph-io/dgraph/issues/8019
+[#8018]: https://github.com/dgraph-io/dgraph/issues/8018
+[#8014]: https://github.com/dgraph-io/dgraph/issues/8014
+[#8013]: https://github.com/dgraph-io/dgraph/issues/8013
+[#8005]: https://github.com/dgraph-io/dgraph/issues/8005
+[#8006]: https://github.com/dgraph-io/dgraph/issues/8006
+[#7983]: https://github.com/dgraph-io/dgraph/issues/7983
+[#7977]: https://github.com/dgraph-io/dgraph/issues/7977
+[#7969]: https://github.com/dgraph-io/dgraph/issues/7969
+[#7968]: https://github.com/dgraph-io/dgraph/issues/7968
+[#7963]: https://github.com/dgraph-io/dgraph/issues/7963
+[#7961]: https://github.com/dgraph-io/dgraph/issues/7961
+[#7959]: https://github.com/dgraph-io/dgraph/issues/7959
+[#7950]: https://github.com/dgraph-io/dgraph/issues/7950
+[#7935]: https://github.com/dgraph-io/dgraph/issues/7935
+[#7932]: https://github.com/dgraph-io/dgraph/issues/7932
+[#7929]: https://github.com/dgraph-io/dgraph/issues/7929
+[#7918]: https://github.com/dgraph-io/dgraph/issues/7918
+[#7900]: https://github.com/dgraph-io/dgraph/issues/7900
+[#7902]: https://github.com/dgraph-io/dgraph/issues/7902
+[#7885]: https://github.com/dgraph-io/dgraph/issues/7885
+[#7880]: https://github.com/dgraph-io/dgraph/issues/7880
+[#7863]: https://github.com/dgraph-io/dgraph/issues/7863
+[#7862]: https://github.com/dgraph-io/dgraph/issues/7862
+[#7839]: https://github.com/dgraph-io/dgraph/issues/7839
+[#7838]: https://github.com/dgraph-io/dgraph/issues/7838
+[#7828]: https://github.com/dgraph-io/dgraph/issues/7828
+[#7825]: https://github.com/dgraph-io/dgraph/issues/7825
+[#7845]: https://github.com/dgraph-io/dgraph/issues/7845
+[#7835]: https://github.com/dgraph-io/dgraph/issues/7835
+[#7833]: https://github.com/dgraph-io/dgraph/issues/7833
+[#7832]: https://github.com/dgraph-io/dgraph/issues/7832
+[#7803]: https://github.com/dgraph-io/dgraph/issues/7803
+[#7801]: https://github.com/dgraph-io/dgraph/issues/7801
+[#7790]: https://github.com/dgraph-io/dgraph/issues/7790
+[#7782]: https://github.com/dgraph-io/dgraph/issues/7782
+[#7780]: https://github.com/dgraph-io/dgraph/issues/7780
+[#7774]: https://github.com/dgraph-io/dgraph/issues/7774
+[#7759]: https://github.com/dgraph-io/dgraph/issues/7759
+[#7744]: https://github.com/dgraph-io/dgraph/issues/7744
+[#7741]: https://github.com/dgraph-io/dgraph/issues/7741
+[#7743]: https://github.com/dgraph-io/dgraph/issues/7743
+[#7737]: https://github.com/dgraph-io/dgraph/issues/7737
+[#7727]: https://github.com/dgraph-io/dgraph/issues/7727
+[#7732]: https://github.com/dgraph-io/dgraph/issues/7732
+[#7724]: https://github.com/dgraph-io/dgraph/issues/7724
+[#7729]: https://github.com/dgraph-io/dgraph/issues/7729
+[#7722]: https://github.com/dgraph-io/dgraph/issues/7722
+[#7713]: https://github.com/dgraph-io/dgraph/issues/7713
+[#7719]: https://github.com/dgraph-io/dgraph/issues/7719
+[#7700]: https://github.com/dgraph-io/dgraph/issues/7700
+[#7715]: https://github.com/dgraph-io/dgraph/issues/7715
+[#7701]: https://github.com/dgraph-io/dgraph/issues/7701
+[#7679]: https://github.com/dgraph-io/dgraph/issues/7679
+[#7674]: https://github.com/dgraph-io/dgraph/issues/7674
+[#7668]: https://github.com/dgraph-io/dgraph/issues/7668
+[#7632]: https://github.com/dgraph-io/dgraph/issues/7632
+[#7568]: https://github.com/dgraph-io/dgraph/issues/7568
+[#7690]: https://github.com/dgraph-io/dgraph/issues/7690
+[#7669]: https://github.com/dgraph-io/dgraph/issues/7669
+[#7651]: https://github.com/dgraph-io/dgraph/issues/7651
+[#7639]: https://github.com/dgraph-io/dgraph/issues/7639
+[#7608]: https://github.com/dgraph-io/dgraph/issues/7608
+[#7605]: https://github.com/dgraph-io/dgraph/issues/7605
+[#7646]: https://github.com/dgraph-io/dgraph/issues/7646
+[#7637]: https://github.com/dgraph-io/dgraph/issues/7637
+[#7636]: https://github.com/dgraph-io/dgraph/issues/7636
+[#7599]: https://github.com/dgraph-io/dgraph/issues/7599
+[#7598]: https://github.com/dgraph-io/dgraph/issues/7598
+[#7570]: https://github.com/dgraph-io/dgraph/issues/7570
+[#7609]: https://github.com/dgraph-io/dgraph/issues/7609
+[#7620]: https://github.com/dgraph-io/dgraph/issues/7620
+[#7530]: https://github.com/dgraph-io/dgraph/issues/7530
+[#7575]: https://github.com/dgraph-io/dgraph/issues/7575
+[#7495]: https://github.com/dgraph-io/dgraph/issues/7495
+[#7576]: https://github.com/dgraph-io/dgraph/issues/7576
+[#7541]: https://github.com/dgraph-io/dgraph/issues/7541
+[#7543]: https://github.com/dgraph-io/dgraph/issues/7543
+[#7535]: https://github.com/dgraph-io/dgraph/issues/7535
+[#7529]: https://github.com/dgraph-io/dgraph/issues/7529
+[#7525]: https://github.com/dgraph-io/dgraph/issues/7525
+[#7524]: https://github.com/dgraph-io/dgraph/issues/7524
+[#7526]: https://github.com/dgraph-io/dgraph/issues/7526
+[#7522]: https://github.com/dgraph-io/dgraph/issues/7522
+[#7498]: https://github.com/dgraph-io/dgraph/issues/7498
+[#7510]: https://github.com/dgraph-io/dgraph/issues/7510
+[#7515]: https://github.com/dgraph-io/dgraph/issues/7515
+[#7512]: https://github.com/dgraph-io/dgraph/issues/7512
+[#7511]: https://github.com/dgraph-io/dgraph/issues/7511
+[#7480]: https://github.com/dgraph-io/dgraph/issues/7480
+[#7488]: https://github.com/dgraph-io/dgraph/issues/7488
+[#7502]: https://github.com/dgraph-io/dgraph/issues/7502
+[#8048]: https://github.com/dgraph-io/dgraph/issues/8048
+[#7992]: https://github.com/dgraph-io/dgraph/issues/7992
+[#7980]: https://github.com/dgraph-io/dgraph/issues/7980
+[#7917]: https://github.com/dgraph-io/dgraph/issues/7917
+[#7721]: https://github.com/dgraph-io/dgraph/issues/7721
+[#7582]: https://github.com/dgraph-io/dgraph/issues/7582
+[#7567]: https://github.com/dgraph-io/dgraph/issues/7567
+[#7564]: https://github.com/dgraph-io/dgraph/issues/7564
+[#7552]: https://github.com/dgraph-io/dgraph/issues/7552
+[#7554]: https://github.com/dgraph-io/dgraph/issues/7554
+[#7505]: https://github.com/dgraph-io/dgraph/issues/7505
+[#8068]: https://github.com/dgraph-io/dgraph/issues/8068
+[#7871]: https://github.com/dgraph-io/dgraph/issues/7871
+[#8038]: https://github.com/dgraph-io/dgraph/issues/8038
+[#7997]: https://github.com/dgraph-io/dgraph/issues/7997
+[#7995]: https://github.com/dgraph-io/dgraph/issues/7995
+[#7988]: https://github.com/dgraph-io/dgraph/issues/7988
+[#7989]: https://github.com/dgraph-io/dgraph/issues/7989
+[#7984]: https://github.com/dgraph-io/dgraph/issues/7984
+[#7982]: https://github.com/dgraph-io/dgraph/issues/7982
+[#7940]: https://github.com/dgraph-io/dgraph/issues/7940
+[#7864]: https://github.com/dgraph-io/dgraph/issues/7864
+[#7870]: https://github.com/dgraph-io/dgraph/issues/7870
+[#7826]: https://github.com/dgraph-io/dgraph/issues/7826
+[#7792]: https://github.com/dgraph-io/dgraph/issues/7792
+[#7764]: https://github.com/dgraph-io/dgraph/issues/7764
+[#7777]: https://github.com/dgraph-io/dgraph/issues/7777
+[#7757]: https://github.com/dgraph-io/dgraph/issues/7757
+[#7703]: https://github.com/dgraph-io/dgraph/issues/7703
+[#7680]: https://github.com/dgraph-io/dgraph/issues/7680
+[#7664]: https://github.com/dgraph-io/dgraph/issues/7664
+[#7109]: https://github.com/dgraph-io/dgraph/issues/7109
+[#7478]: https://github.com/dgraph-io/dgraph/issues/7478
+[#8092]: https://github.com/dgraph-io/dgraph/issues/8092
+
+## [21.03.2] - 2021-08-26
+[21.03.2]: https://github.com/dgraph-io/dgraph/compare/v21.03.1...v21.03.2
+
+### Fixed
+
+- GraphQL
+  - Handle extend keyword for Queries and Mutations ([#7923][])
+
+- Core Dgraph
+  - fix(Raft): Detect network partition when streaming ([#7908][])
+  - fix(Raft): Reconnect via a redial in case of disconnection. ([#7921][])
+  - fix(conn): JoinCluster loop should use latest conn ([#7952][])
+  - fix(pool): use write lock when getting health info ([#7967][])
+  - fix(acl): The Acl cache should be updated on restart and restore. ([#7964][])
+  - fix(acl): filter out the results based on type ([#7981][])
+  - fix(backup): Fix full backup request ([#7934][])
+  - fix(live): quote the xid when doing upsert ([#7999][])
+  - fix(export): Write temporary files for export to the t directory. ([#7998][])
+
+### Changed
+
+- protobuf: upgrade golang/protobuf library v1.4.1 -> v1.5.2 ([#7949][])
+- chore(raft): Log packets message less frequently. ([#7913][])
+
+### Added
+
+- feat(acl): allow access to all the predicates using wildcard. ([#7993][])
+- feat(Multi-tenancy): Add namespaces field to state. ([#7936][])
+
+[#7923]: https://github.com/dgraph-io/dgraph/issues/7923
+[#7908]: https://github.com/dgraph-io/dgraph/issues/7908
+[#7921]: https://github.com/dgraph-io/dgraph/issues/7921
+[#7952]: https://github.com/dgraph-io/dgraph/issues/7952
+[#7967]: https://github.com/dgraph-io/dgraph/issues/7967
+[#7964]: https://github.com/dgraph-io/dgraph/issues/7964
+[#7981]: https://github.com/dgraph-io/dgraph/issues/7981
+[#7934]: https://github.com/dgraph-io/dgraph/issues/7934
+[#7999]: https://github.com/dgraph-io/dgraph/issues/7999
+[#7998]: https://github.com/dgraph-io/dgraph/issues/7998
+[#7949]: https://github.com/dgraph-io/dgraph/issues/7949
+[#7913]: https://github.com/dgraph-io/dgraph/issues/7913
+[#7993]: https://github.com/dgraph-io/dgraph/issues/7993
+[#7936]: https://github.com/dgraph-io/dgraph/issues/7936
+
+## [21.03.1] - 2021-06-16
+[21.03.1]: https://github.com/dgraph-io/dgraph/compare/v21.03.0...v21.03.1
+
+### Fixed
+- GraphQL
+  - fix(GraphQL): fix @cascade with Pagination for @auth queries ([#7695][])
+  - Fix(GraphQL): Fix GraphQL encoding in case of empty list ([#7726][]) ([#7730][])
+  - Fix(GraphQL): Add filter in DQL query in case of reverse predicate ([#7728][]) ([#7733][])
+  - Fix(graphql): Fix error message of lambdaOnMutate directive  ([#7751][]) ([#7754][])
+
+- Core Dgraph
+  - fix(vault): Hide ACL flags when not required ([#7701][])
+  - fix(Chunker): don't delete node with empty facet in mutation ([#7737][]) ([#7745][])
+  - fix(bulk): throw the error instead of crashing ([#7722][]) ([#7749][])
+  - fix(raftwal): take snapshot after restore ([#7719][]) ([#7750][])
+  - fix(bulk): upsert guardian/groot for all existing namespaces ([#7759][]) ([#7769][])
+  - fix(txn): ensure that txn hash is set ([#7782][]) ([#7784][])
+  - bug fix to permit audit streaming to stdout writer([#7803][]) ([#7804][])
+  - fix(drop): attach galaxy namespace to drop attr done on 20.11 backup ([#7827][])
+  - fix: Prevent proposal from being dropped accidentally ([#7741][]) ([#7811][])
+  - fix(schema-update): Start opIndexing only when index creation is required. ([#7845][]) ([#7847][])
+  - fix(export): Fix facet export of reference type postings to JSON format ([#7744][]) ([#7756][])
+  - fix(lease): don't do rate limiting when not limit is not specified ([#7787][])
+  - fix(lease): prevent ID lease overflow ([#7802][])
+  - fix(auth): preserve the status code while returning error ([#7832][]) ([#7834][])
+  - fix(ee): GetKeys should return an error ([#7713][]) ([#7797][])
+  - fix(admin): remove exportedFiles field ([#7835][]) ([#7836][])
+  - fix(restore): append galaxy namespace to type name ([#7881][])
+  - fix(DQL): revert changes related to cascade pagination with sort ([#7885][]) ([#7888][])
+  - fix(metrics): Expose dgraph_num_backups_failed_total metric view. ([#7900][]) ([#7904][])
+
+### Changed
+  - opt(GraphQL): filter existence queries on GraphQL side instead of using @filter(type) ([#7757][]) ([#7760][])
+
+### Added
+  - feat(cdc): Add support for SCRAM SASL mechanism ([#7765][]) ([#7767][])
+  - Add asynchronous task API ([#7781][])
+  - make exports synchronous again ([#7877][])
+  - feat(schema): do schema versioning and make backup non-blocking for i… ([#7856][]) ([#7873][])
+
+[#7701]: https://github.com/dgraph-io/dgraph/issues/7701
+[#7737]: https://github.com/dgraph-io/dgraph/issues/7737
+[#7745]: https://github.com/dgraph-io/dgraph/issues/7745
+[#7722]: https://github.com/dgraph-io/dgraph/issues/7722
+[#7749]: https://github.com/dgraph-io/dgraph/issues/7749
+[#7719]: https://github.com/dgraph-io/dgraph/issues/7719
+[#7750]: https://github.com/dgraph-io/dgraph/issues/7750
+[#7765]: https://github.com/dgraph-io/dgraph/issues/7765
+[#7767]: https://github.com/dgraph-io/dgraph/issues/7767
+[#7759]: https://github.com/dgraph-io/dgraph/issues/7759
+[#7769]: https://github.com/dgraph-io/dgraph/issues/7769
+[#7782]: https://github.com/dgraph-io/dgraph/issues/7782
+[#7784]: https://github.com/dgraph-io/dgraph/issues/7784
+[#7803]: https://github.com/dgraph-io/dgraph/issues/7803
+[#7804]: https://github.com/dgraph-io/dgraph/issues/7804
+[#7827]: https://github.com/dgraph-io/dgraph/issues/7827
+[#7741]: https://github.com/dgraph-io/dgraph/issues/7741
+[#7811]: https://github.com/dgraph-io/dgraph/issues/7811
+[#7845]: https://github.com/dgraph-io/dgraph/issues/7845
+[#7847]: https://github.com/dgraph-io/dgraph/issues/7847
+[#7744]: https://github.com/dgraph-io/dgraph/issues/7744
+[#7756]: https://github.com/dgraph-io/dgraph/issues/7756
+[#7787]: https://github.com/dgraph-io/dgraph/issues/7787
+[#7802]: https://github.com/dgraph-io/dgraph/issues/7802
+[#7832]: https://github.com/dgraph-io/dgraph/issues/7832
+[#7834]: https://github.com/dgraph-io/dgraph/issues/7834
+[#7796]: https://github.com/dgraph-io/dgraph/issues/7796
+[#7781]: https://github.com/dgraph-io/dgraph/issues/7781
+[#7713]: https://github.com/dgraph-io/dgraph/issues/7713
+[#7797]: https://github.com/dgraph-io/dgraph/issues/7797
+[#7835]: https://github.com/dgraph-io/dgraph/issues/7835
+[#7836]: https://github.com/dgraph-io/dgraph/issues/7836
+[#7856]: https://github.com/dgraph-io/dgraph/issues/7856
+[#7873]: https://github.com/dgraph-io/dgraph/issues/7873
+[#7881]: https://github.com/dgraph-io/dgraph/issues/7881
+[#7885]: https://github.com/dgraph-io/dgraph/issues/7885
+[#7888]: https://github.com/dgraph-io/dgraph/issues/7888
+[#7877]: https://github.com/dgraph-io/dgraph/issues/7877
+[#7695]: https://github.com/dgraph-io/dgraph/issues/7695
+[#7726]: https://github.com/dgraph-io/dgraph/issues/7726
+[#7730]: https://github.com/dgraph-io/dgraph/issues/7730
+[#7728]: https://github.com/dgraph-io/dgraph/issues/7728
+[#7733]: https://github.com/dgraph-io/dgraph/issues/7733
+[#7751]: https://github.com/dgraph-io/dgraph/issues/7751
+[#7754]: https://github.com/dgraph-io/dgraph/issues/7754
+[#7757]: https://github.com/dgraph-io/dgraph/issues/7757
+[#7760]: https://github.com/dgraph-io/dgraph/issues/7760
+[#7900]: https://github.com/dgraph-io/dgraph/issues/7900
+[#7904]: https://github.com/dgraph-io/dgraph/issues/7904
+
+
+## [21.03.0] - 2021-04-07
+[21.03.0]: https://github.com/dgraph-io/dgraph/compare/v20.11.0...v21.03.0
+
+### Changed
+
+- [BREAKING] Feat(flags): expand badger to accept all valid options ([#7677][])
+- [BREAKING] Feat(Dgraph): Read-Only replicas ([#7272][])
+- [BREAKING] Consolidate multiple flags into a few SuPerflags ([#7436][]) ([#7337][]) ([#7560][]) ([#7652][]) ([#7675][])
+- [BREAKING] Feat(zero): Make zero lease out namespace IDs ([#7341][])
+- [BREAKING] Fix(commit): make txn context more robust ([#7659][])
+- [BREAKING] Fix(Query): Return error for illegal math operations. ([#7631][])
+- [BREAKING] Rename Badger metrics. ([#7507][])
+- [BREAKING] Fix(Backups): new badger Superflag, NumGoroutines option solves OOM crashes ([#7387][])
+- [BREAKING] Remove restore tracker as its not necessary ([#7148][])
+- [BREAKING] Chore(GraphQL): Remove `dgraph.graphql.p_sha256hash` predicate and merge it into `dgraph.graphql.p_query` ([#7451][])
+- [BREAKING] Introducing Multi-Tenancy in dgraph ([#7293][]) ([#7400][]) ([#7397][]) ([#7399][]) ([#7377][]) ([#7414][]) ([#7418][])
+
+### Added
+
+- GraphQL
+  - Feat(GraphQL): Zero HTTP endpoints are now available at GraphQL admin (GraphQL-1118) ([#6649][]) ([#7670][])
+  - Feat(GraphQL): Webhooks on add/update/delete mutations (GraphQL-1045) ([#7494][]) ([#7616][])
+  - Feat(GraphQL): Allow Multiple JWKUrls for auth. ([#7528][]) ([#7581][])
+  - Feat(GraphQL): allow string --> Int64 hardcoded coercing ([#7584][])
+  - Feat(Apollo): Add support for `@provides` and `@requires` directive.  ([#7503][])
+  - Feat(GraphQL): Handle upsert with multiple XIDs in case one of the XIDs does not exist ([#7472][])
+  - Feat(GraphQL): Delete redundant reference to inverse object ([#7469][])
+  - Feat(GraphQL): upgarde GraphQL-transport-ws module ([#7441][])
+  - Feat(GraphQL): This PR allow multiple `@id` fields in a type. ([#7235][])
+  - Feat(GraphQL): Add support for GraphQL Upsert Mutations ([#7433][])
+  - Feat(GraphQL): This PR adds subscriptions to custom DQL.  ([#7385][])
+  - Feat(GraphQL): Make XID node referencing invariant of order in which XIDs are referenced in Mutation Rewriting ([#7448][])
+  - Feat(GraphQL): Dgraph.Authorization should with irrespective of number of spaces after # ([#7410][])
+  - Feat(GraphQL):  adding auth token support for regexp, in and arrays ([#7039][])
+  - Feat(GraphQL): Extend Support of IN filter to all the scalar data types ([#7340][])
+  - Feat(GraphQL): Add `@include` and `@skip` to the Directives ([#7314][])
+  - Feat(GraphQL): add support for has filter with list of arguments. ([#7406][])
+  - Feat(GraphQL): Add support for has filter on list of fields. ([#7363][])
+  - Feat(GraphQL): Allow standard claims into auth variables ([#7381][])
+  - Perf(GraphQL): Generate GraphQL query response by optimized JSON encoding (GraphQL-730) ([#7371][])
+  - Feat(GraphQL): Extend Support For Apollo Federation ([#7275][])
+  - Feat(GraphQL): Support using custom DQL with `@groupby` ([#7476][])
+  - Feat(GraphQL): Add support for passing OAuth Bearer token as authorization JWT ([#7490][])
+
+- Core Dgraph
+  - Feat(query): Add mechanism to have a limit on number of pending queries ([#7603][])
+  - Perf(bulk): Reuse allocator ([#7360][])
+  - Perf(compression): Use gzip with BestSpeed in export and backup ([#7643][]) ([#7683][])
+  - Feat(flags): Add query timeout as a limit config ([#7599][])
+  - Opt(reindex): do not try building indices when inserting a new predicate ([#7109][])
+  - Perf(txn): de-duplicate the context keys and predicates ([#7478][])
+  - Feat(flags): use Vault for ACL secrets ([#7492][])
+  - Feat(bulk): Add /jemalloc HTTP endpoint. ([#7165][])
+  - Feat(metrics): Add Dgraph txn metrics (commits and discards). ([#7339][])
+  - Feat(Bulk Loader + Live Loader): Supporting Loading files via s3/minio ([#7359][])
+  - Feat(metrics): Add Raft leadership metrics. ([#7338][])
+  - Use Badger's value log threshold of 1MB ([#7415][])
+  - Feat(Monitoring): Adding Monitoring for Disk Space and Number of Backups ([#7404][])
+  - Perf: simple simdjson solution with 30% speed increase ([#7316][])
+
+- Enterprise Features
+  - Perf(Backup): Improve backup Performance ([#7601][])
+  - Make backup API asynchronous
+  - Perf(backups): Reduce latency of list backups ([#7435][])
+  - Feat(acl): allow setting a password at the time of creation of namespace ([#7446][])
+  - Feat(enterprise): audit logs for alpha and zero ([#7295][])
+  - Feat(enterpise): Change data capture (CDC) integration with kafka ([#7395][])
+  - Perf(dgraph) - Use badger sinceTs in backups ([#7392][])
+  - Perf(backup): Reorganize the output of lsbackup command ([#7354][])
+
+### Fixed
+- GraphQL
+  - Fix(GraphQL): Fix Execution Trace for Add and Update Mutations ([#7656][])
+  - Fix(GraphQL): Add error handling for unrecognized args to generate directive. ([#7612][])
+  - Fix(GraphQL): Fix panic when no schema exists for a new namespace ([#7630][])
+  - Fix(GraphQL): Fixed output coercing for admin fields. ([#7617][])
+  - Fix(GraphQL): Fix lambda querying a lambda field in case of no data. ([#7610][])
+  - Fix(GraphQL): Undo the breaking change and tag it as deprecated. ([#7602][])
+  - Fix(GraphQL): Add extra checks for deleting UpdateTypeInput ([#7595][])
+  - Fix(persistent): make persistent query namespace aware ([#7570][])
+  - Fix(GraphQL): remove support of `@id` directive on Float ([#7583][])
+  - Fix(GraphQL): Fix mutation with Int Xid variables. ([#7565][]) ([#7588][])
+  - Fix(GraphQL): Fix error message when dgraph and GraphQL schema differ.
+  - Fix(GraphQL): Fix custom(dql: ...) with `__typename` (GraphQL-1098) ([#7569][])
+  - Fix(GraphQL): Change variable name generation for interface auth rules ([#7559][])
+  - Fix(GraphQL): Apollo federation now works with lambda (GraphQL-1084) ([#7558][])
+  - Fix(GraphQL): Fix empty remove in update mutation patch, that remove all the data for nodes in filter. ([#7563][])
+  - Fix(GraphQL): Fix order of entities query result  ([#7542][])
+  - Fix(GraphQL): Change variable name generation from `Type<Num>` to `Type_<Num>` ([#7556][])
+  - Fix(GraphQL): Fix duplicate xid error for multiple xid fields. ([#7546][])
+  - Fix(GraphQL): Fix query rewriting for multiple order on nested field. ([#7523][])
+  - Fix(GraphQL) Fix empty `type Query` with single extended type definition in the schema. ([#7517][])
+  - Fix(GraphQL): Added support for parameterized cascade with variables. ([#7477][])
+  - Fix(GraphQL): Fix fragment expansion in auth queries (GraphQL-1030) ([#7467][])
+  - Fix(GraphQL): Refactor Mutation Rewriter for Add and Update Mutations ([#7409][])
+  - Fix(GraphQL):  Fix `@auth` rules evaluation in case of null variables in custom claims.  ([#7380][])
+  - Fix(GraphQL): Fix interface query with auth rules. ([#7401][])
+  - Fix(GraphQL): Added error for case when multiple filter functions are used in filter. ([#7368][])
+  - Fix(subscriptions): Fix subscription to use the kv with the max version ([#7349][])
+  - Fix(GraphQL):This PR Fix a panic when we pass a single ID as a integer and expected type is `[ID]`.We now coerce that to type array of string.  ([#7325][])
+  - Fix(GraphQL): This PR Fix multi cors and multi schema nodes issue by selecting one of the latest added nodes, and add dgraph type to cors. ([#7270][])
+  - Fix(GraphQL): This PR allow to use `__typename` in mutation. ([#7285][])
+  - Fix(GraphQL): Fix auth-token propagation for HTTP endpoints resolved through GraphQL (GraphQL-946) ([#7245][])
+  - Fix(GraphQL): This PR addd input coercion from single object to list and Fix panic when we pass single ID in filter as a string.  ([#7133][])
+  - Fix(GraphQL): adding support for `@id` with type other than strings ([#7019][])
+  - Fix(GraphQL): Fix panic caused by incorrect input coercion of scalar to list ([#7405][])
+
+- Core Dgraph
+  - Fix(flag): Fix bulk loader flag and remove flag parsing from critical path ([#7679][])
+  - Fix(query): Fix pagination with match functions ([#7668][])
+  - Fix(postingList): Acquire lock before reading the cached posting list ([#7632][])
+  - Fix(zero): add a ratelimiter to limit the uid lease per namespace ([#7568][])
+  - Fixing type inversion in ludicrous mode ([#7614][])
+  - Fix(/commit): protect the commit endpoint via acl ([#7608][])
+  - Fix(login): Fix login based on refresh token logic ([#7637][])
+  - Fix(Query): Fix cascade pagination with 0 offset. ([#7636][])
+  - Fix(telemetry): Track enterprise Feature usage ([#7495][])
+  - Fix(dql): Fix error message in case of wrong argument to val() ([#7543][])
+  - Fix(export): Fix namespace parameter in export ([#7524][])
+  - Fix(live): Fix usage of force-namespace parameter in export ([#7526][])
+  - Fix(Configs): Allow hierarchical notation in JSON/YAML configs ([#7498][])
+  - Fix upsert mutations ([#7515][])
+  - Fix(admin-endpoints): Error out if the request is rejected by the server ([#7511][])
+  - Fix(Dgraph): Throttle number of files to open while schema update ([#7480][])
+  - Fix(metrics): Expose Badger LSM and vlog size bytes. ([#7488][])
+  - Fix(schema): log error instead of panic if schema not found for predicate ([#7502][])
+  - Fix(moveTablet): make move tablet namespace aware ([#7468][])
+  - Fix(dgraph): Do not return reverse edges from expandEdges ([#7461][])
+  - Fix(Query): Fix cascade with pagination ([#7440][])
+  - Fix(Mutation): Deeply-nested uid facets ([#7455][])
+  - Fix(live): Fix live loader to load with force namespace ([#7445][])
+  - Fix(sort): Fix multi-sort with nils ([#7432][])
+  - Fix(GC): Reduce DiscardRatio from 0.9 to 0.7 ([#7412][])
+  - Fix(jsonpb): use gogo/jsonpb for unmarshalling string ([#7382][])
+  - Fix: Calling Discard only adds to `txn_discards` metric, not `txn_aborts`. ([#7365][])
+  - Fix(Dgraph): check for deleteBelowTs in pIterator.valid ([#7288][])
+  - Fix(dgraph): Add X-Dgraph-AuthToken to list of access control allowed headers
+  - Fix(sort): Make sort consistent for indexed and without indexed predicates ([#7241][])
+  - Fix(ludicrous): Fix logical race in concurrent execution of mutations ([#7269][])
+  - Fix(restore): Handle MaxUid=0 appropriately ([#7258][])
+  - Fix(indexing): use encrypted tmpDBs for index building if encryption is enabled ([#6828][])
+  - Fix(bulk): save schemaMap after map phase ([#7188][])
+  - Fix(DQL): Fix Aggregate Functions on empty data ([#7176][])
+  - Fixing unique proposal key error ([#7218][])
+  - Fix(Chunker): JSON parsing Performance ([#7171][])
+  - Fix(bulk): Fix memory held by b+ tree in reduce phase ([#7161][])
+  - Fix(bulk): Fixing bulk loader when encryption + mtls is enabled ([#7154][])
+
+- Enterprise Features
+  - Fix(restore): append the object path preFix while reading backup ([#7686][])
+  - Fix restoring from old version for type ([#7456][])
+  - Fix(backup): Fix Perf issues with full backups ([#7434][])
+  - Fix(export-backup): Fix memory leak in backup export ([#7452][])
+  - Fix(ACL): use acl for export, add GoG admin resolvers ([#7420][])
+  - Fix(restore): reset acl accounts once restore is done if necessary ([#7202][])
+  - Fix(restore): multiple restore requests should be rejected and proposals should not be submitted ([#7118][])
+
+[#7677]: https://github.com/dgraph-io/dgraph/issues/7677
+[#7272]: https://github.com/dgraph-io/dgraph/issues/7272
+[#7436]: https://github.com/dgraph-io/dgraph/issues/7436
+[#7337]: https://github.com/dgraph-io/dgraph/issues/7337
+[#7560]: https://github.com/dgraph-io/dgraph/issues/7560
+[#7652]: https://github.com/dgraph-io/dgraph/issues/7652
+[#7675]: https://github.com/dgraph-io/dgraph/issues/7675
+[#7341]: https://github.com/dgraph-io/dgraph/issues/7341
+[#7659]: https://github.com/dgraph-io/dgraph/issues/7659
+[#7631]: https://github.com/dgraph-io/dgraph/issues/7631
+[#7507]: https://github.com/dgraph-io/dgraph/issues/7507
+[#7387]: https://github.com/dgraph-io/dgraph/issues/7387
+[#7148]: https://github.com/dgraph-io/dgraph/issues/7148
+[#7143]: https://github.com/dgraph-io/dgraph/issues/7143
+[#7451]: https://github.com/dgraph-io/dgraph/issues/7451
+[#6649]: https://github.com/dgraph-io/dgraph/issues/6649
+[#7670]: https://github.com/dgraph-io/dgraph/issues/7670
+[#7494]: https://github.com/dgraph-io/dgraph/issues/7494
+[#7616]: https://github.com/dgraph-io/dgraph/issues/7616
+[#7528]: https://github.com/dgraph-io/dgraph/issues/7528
+[#7581]: https://github.com/dgraph-io/dgraph/issues/7581
+[#7584]: https://github.com/dgraph-io/dgraph/issues/7584
+[#7503]: https://github.com/dgraph-io/dgraph/issues/7503
+[#7472]: https://github.com/dgraph-io/dgraph/issues/7472
+[#7469]: https://github.com/dgraph-io/dgraph/issues/7469
+[#7441]: https://github.com/dgraph-io/dgraph/issues/7441
+[#7235]: https://github.com/dgraph-io/dgraph/issues/7235
+[#7433]: https://github.com/dgraph-io/dgraph/issues/7433
+[#7385]: https://github.com/dgraph-io/dgraph/issues/7385
+[#7448]: https://github.com/dgraph-io/dgraph/issues/7448
+[#7410]: https://github.com/dgraph-io/dgraph/issues/7410
+[#7039]: https://github.com/dgraph-io/dgraph/issues/7039
+[#7340]: https://github.com/dgraph-io/dgraph/issues/7340
+[#7314]: https://github.com/dgraph-io/dgraph/issues/7314
+[#7406]: https://github.com/dgraph-io/dgraph/issues/7406
+[#7363]: https://github.com/dgraph-io/dgraph/issues/7363
+[#7381]: https://github.com/dgraph-io/dgraph/issues/7381
+[#7371]: https://github.com/dgraph-io/dgraph/issues/7371
+[#7275]: https://github.com/dgraph-io/dgraph/issues/7275
+[#7476]: https://github.com/dgraph-io/dgraph/issues/7476
+[#7490]: https://github.com/dgraph-io/dgraph/issues/7490
+[#7603]: https://github.com/dgraph-io/dgraph/issues/7603
+[#7360]: https://github.com/dgraph-io/dgraph/issues/7360
+[#7643]: https://github.com/dgraph-io/dgraph/issues/7643
+[#7683]: https://github.com/dgraph-io/dgraph/issues/7683
+[#7599]: https://github.com/dgraph-io/dgraph/issues/7599
+[#7109]: https://github.com/dgraph-io/dgraph/issues/7109
+[#7478]: https://github.com/dgraph-io/dgraph/issues/7478
+[#7492]: https://github.com/dgraph-io/dgraph/issues/7492
+[#7165]: https://github.com/dgraph-io/dgraph/issues/7165
+[#7339]: https://github.com/dgraph-io/dgraph/issues/7339
+[#7359]: https://github.com/dgraph-io/dgraph/issues/7359
+[#7338]: https://github.com/dgraph-io/dgraph/issues/7338
+[#7415]: https://github.com/dgraph-io/dgraph/issues/7415
+[#7404]: https://github.com/dgraph-io/dgraph/issues/7404
+[#7316]: https://github.com/dgraph-io/dgraph/issues/7316
+[#7601]: https://github.com/dgraph-io/dgraph/issues/7601
+[#7435]: https://github.com/dgraph-io/dgraph/issues/7435
+[#7446]: https://github.com/dgraph-io/dgraph/issues/7446
+[#7293]: https://github.com/dgraph-io/dgraph/issues/7293
+[#7400]: https://github.com/dgraph-io/dgraph/issues/7400
+[#7397]: https://github.com/dgraph-io/dgraph/issues/7397
+[#7399]: https://github.com/dgraph-io/dgraph/issues/7399
+[#7377]: https://github.com/dgraph-io/dgraph/issues/7377
+[#7414]: https://github.com/dgraph-io/dgraph/issues/7414
+[#7418]: https://github.com/dgraph-io/dgraph/issues/7418
+[#7295]: https://github.com/dgraph-io/dgraph/issues/7295
+[#7395]: https://github.com/dgraph-io/dgraph/issues/7395
+[#7392]: https://github.com/dgraph-io/dgraph/issues/7392
+[#7354]: https://github.com/dgraph-io/dgraph/issues/7354
+[#7656]: https://github.com/dgraph-io/dgraph/issues/7656
+[#7612]: https://github.com/dgraph-io/dgraph/issues/7612
+[#7630]: https://github.com/dgraph-io/dgraph/issues/7630
+[#7617]: https://github.com/dgraph-io/dgraph/issues/7617
+[#7610]: https://github.com/dgraph-io/dgraph/issues/7610
+[#7602]: https://github.com/dgraph-io/dgraph/issues/7602
+[#7595]: https://github.com/dgraph-io/dgraph/issues/7595
+[#7570]: https://github.com/dgraph-io/dgraph/issues/7570
+[#7583]: https://github.com/dgraph-io/dgraph/issues/7583
+[#7565]: https://github.com/dgraph-io/dgraph/issues/7565
+[#7588]: https://github.com/dgraph-io/dgraph/issues/7588
+[#7569]: https://github.com/dgraph-io/dgraph/issues/7569
+[#7559]: https://github.com/dgraph-io/dgraph/issues/7559
+[#7558]: https://github.com/dgraph-io/dgraph/issues/7558
+[#7563]: https://github.com/dgraph-io/dgraph/issues/7563
+[#7542]: https://github.com/dgraph-io/dgraph/issues/7542
+[#7556]: https://github.com/dgraph-io/dgraph/issues/7556
+[#7546]: https://github.com/dgraph-io/dgraph/issues/7546
+[#7523]: https://github.com/dgraph-io/dgraph/issues/7523
+[#7517]: https://github.com/dgraph-io/dgraph/issues/7517
+[#7477]: https://github.com/dgraph-io/dgraph/issues/7477
+[#7467]: https://github.com/dgraph-io/dgraph/issues/7467
+[#7409]: https://github.com/dgraph-io/dgraph/issues/7409
+[#7380]: https://github.com/dgraph-io/dgraph/issues/7380
+[#7401]: https://github.com/dgraph-io/dgraph/issues/7401
+[#7368]: https://github.com/dgraph-io/dgraph/issues/7368
+[#7349]: https://github.com/dgraph-io/dgraph/issues/7349
+[#7325]: https://github.com/dgraph-io/dgraph/issues/7325
+[#7270]: https://github.com/dgraph-io/dgraph/issues/7270
+[#7285]: https://github.com/dgraph-io/dgraph/issues/7285
+[#7245]: https://github.com/dgraph-io/dgraph/issues/7245
+[#7133]: https://github.com/dgraph-io/dgraph/issues/7133
+[#7019]: https://github.com/dgraph-io/dgraph/issues/7019
+[#7405]: https://github.com/dgraph-io/dgraph/issues/7405
+[#7679]: https://github.com/dgraph-io/dgraph/issues/7679
+[#7668]: https://github.com/dgraph-io/dgraph/issues/7668
+[#7632]: https://github.com/dgraph-io/dgraph/issues/7632
+[#7568]: https://github.com/dgraph-io/dgraph/issues/7568
+[#7614]: https://github.com/dgraph-io/dgraph/issues/7614
+[#7608]: https://github.com/dgraph-io/dgraph/issues/7608
+[#7637]: https://github.com/dgraph-io/dgraph/issues/7637
+[#7636]: https://github.com/dgraph-io/dgraph/issues/7636
+[#7495]: https://github.com/dgraph-io/dgraph/issues/7495
+[#7543]: https://github.com/dgraph-io/dgraph/issues/7543
+[#7524]: https://github.com/dgraph-io/dgraph/issues/7524
+[#7526]: https://github.com/dgraph-io/dgraph/issues/7526
+[#7498]: https://github.com/dgraph-io/dgraph/issues/7498
+[#7515]: https://github.com/dgraph-io/dgraph/issues/7515
+[#7511]: https://github.com/dgraph-io/dgraph/issues/7511
+[#7480]: https://github.com/dgraph-io/dgraph/issues/7480
+[#7488]: https://github.com/dgraph-io/dgraph/issues/7488
+[#7502]: https://github.com/dgraph-io/dgraph/issues/7502
+[#7468]: https://github.com/dgraph-io/dgraph/issues/7468
+[#7461]: https://github.com/dgraph-io/dgraph/issues/7461
+[#7440]: https://github.com/dgraph-io/dgraph/issues/7440
+[#7455]: https://github.com/dgraph-io/dgraph/issues/7455
+[#7445]: https://github.com/dgraph-io/dgraph/issues/7445
+[#7432]: https://github.com/dgraph-io/dgraph/issues/7432
+[#7412]: https://github.com/dgraph-io/dgraph/issues/7412
+[#7382]: https://github.com/dgraph-io/dgraph/issues/7382
+[#7365]: https://github.com/dgraph-io/dgraph/issues/7365
+[#7288]: https://github.com/dgraph-io/dgraph/issues/7288
+[#7241]: https://github.com/dgraph-io/dgraph/issues/7241
+[#7269]: https://github.com/dgraph-io/dgraph/issues/7269
+[#7258]: https://github.com/dgraph-io/dgraph/issues/7258
+[#6828]: https://github.com/dgraph-io/dgraph/issues/6828
+[#7188]: https://github.com/dgraph-io/dgraph/issues/7188
+[#7176]: https://github.com/dgraph-io/dgraph/issues/7176
+[#7218]: https://github.com/dgraph-io/dgraph/issues/7218
+[#7171]: https://github.com/dgraph-io/dgraph/issues/7171
+[#7161]: https://github.com/dgraph-io/dgraph/issues/7161
+[#7154]: https://github.com/dgraph-io/dgraph/issues/7154
+[#7686]: https://github.com/dgraph-io/dgraph/issues/7686
+[#7456]: https://github.com/dgraph-io/dgraph/issues/7456
+[#7434]: https://github.com/dgraph-io/dgraph/issues/7434
+[#7452]: https://github.com/dgraph-io/dgraph/issues/7452
+[#7420]: https://github.com/dgraph-io/dgraph/issues/7420
+[#7202]: https://github.com/dgraph-io/dgraph/issues/7202
+[#7118]: https://github.com/dgraph-io/dgraph/issues/7118
+
 ## [20.11.3] - 2021-03-31
 [20.11.3]: https://github.com/dgraph-io/dgraph/compare/v20.11.2...v20.11.3
 
