@@ -3,7 +3,8 @@
 **The Only Native GraphQL Database With A Graph Backend.**
 
 [![Wiki](https://img.shields.io/badge/res-wiki-blue.svg)](https://dgraph.io/docs/)
-[![Build Status](https://teamcity.dgraph.io/guestAuth/app/rest/builds/buildType:(id:Dgraph_Ci)/statusIcon.svg)](https://teamcity.dgraph.io/viewLog.html?buildTypeId=Dgraph_Ci&buildId=lastFinished&guest=1)
+[![Build Status](https://teamcity.dgraph.io/guestAuth/app/rest/builds/buildType:(id:Dgraph_Ci)[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fmatthewmcneely%2Fdgraph.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Fmatthewmcneely%2Fdgraph?ref=badge_shield)
+/statusIcon.svg)](https://teamcity.dgraph.io/viewLog.html?buildTypeId=Dgraph_Ci&buildId=lastFinished&guest=1)
 [![Coverage Status](https://coveralls.io/repos/github/dgraph-io/dgraph/badge.svg?branch=master)](https://coveralls.io/github/dgraph-io/dgraph?branch=master)
 [![Go Report Card](https://goreportcard.com/badge/github.com/dgraph-io/dgraph)](https://goreportcard.com/report/github.com/dgraph-io/dgraph)
 
@@ -127,3 +128,7 @@ The Dgraph team maintains several [officially supported client libraries](https:
 - Please use [discuss.dgraph.io](https://discuss.dgraph.io) for documentation, questions, feature requests and discussions.
 - Please use [discuss.dgraph.io](https://discuss.dgraph.io/c/issues/dgraph/38) for filing bugs or feature requests.
 - Follow us on Twitter [@dgraphlabs](https://twitter.com/dgraphlabs).
+
+
+## License
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fmatthewmcneely%2Fdgraph.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2Fmatthewmcneely%2Fdgraph?ref=badge_large)
